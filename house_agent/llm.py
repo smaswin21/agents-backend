@@ -1,4 +1,4 @@
-# llm.py
+# llm.py -- LangChain LLM setup
 from langchain_openai import ChatOpenAI
 from .config import OPENAI_API_KEY, OPENAI_MODEL, OPENAI_BASE_URL
 
@@ -10,3 +10,4 @@ def make_llm():
         temperature=0,
         base_url=OPENAI_BASE_URL
     )
+

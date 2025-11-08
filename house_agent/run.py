@@ -2,6 +2,27 @@
 from langchain_core.messages import HumanMessage, SystemMessage
 from .graph import build_graph
 
+def main():
+    app = build_graph()
+    print("LangGraph tool-call test. Type 'exit' to quit.")
+
+    state = {"messages": [SystemMessage(content="You can add numbers using the add_numbers tool.")]} # CHANGE THIS SO IT IS RELEVANT 
+    while True:
+        user = input("\nYou: ").strip()
+        if user.lower() in {"exit", "quit"}:
+            break
+        if not user:
+            continue
+        state["messages"].append(HumanMessage(content=user))
+        state = app.invoke(state)
+        print("Agent:", state["messages"][-1].content)
+
+if __name__ == "__main__":
+    main()
+
+
+#
+#### IGNORE THIS BUT KEEP
 # def main():
 #     app = build_graph()
 #     print("LangGraph x GPT-5 agent (nano). Type 'exit' to quit.")
@@ -38,22 +59,3 @@ from .graph import build_graph
 
 # if __name__ == "__main__":
 #     main()
-
-
-def main():
-    app = build_graph()
-    print("LangGraph tool-call test. Type 'exit' to quit.")
-
-    state = {"messages": [SystemMessage(content="You can add numbers using the add_numbers tool.")]}
-    while True:
-        user = input("\nYou: ").strip()
-        if user.lower() in {"exit", "quit"}:
-            break
-        if not user:
-            continue
-        state["messages"].append(HumanMessage(content=user))
-        state = app.invoke(state)
-        print("Agent:", state["messages"][-1].content)
-
-if __name__ == "__main__":
-    main()

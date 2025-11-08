@@ -1,6 +1,6 @@
 # state.py
 
-# will store conversation memory inside the graph
+# Define the agent state structure that - will store conversation memory inside the graph
 from typing_extensions import TypedDict, Annotated
 from typing import List
 from langchain_core.messages import BaseMessage
