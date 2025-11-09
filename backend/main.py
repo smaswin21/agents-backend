@@ -1,18 +1,13 @@
 from typing import Union
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel
 from dotenv import load_dotenv
 from db.mongo import get_db
-from routers.shop_agent import router as shopping_agent_router
 
 load_dotenv()
 
-app = FastAPI(title="Agents Backend")
-
-# Include the routers
-app.include_router(shopping_agent_router)
+app = FastAPI(title="Agents Backend - House Agent")
 
 
 @app.get("/")

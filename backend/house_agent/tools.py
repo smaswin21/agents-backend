@@ -1,169 +1,3 @@
-# """
-# LangGraph tools for the household agent.
-# These tools interact with MongoDB to fetch and analyze household data.
-# """
-# from typing import List, Dict, Any, Optional
-# import sys
-# from pathlib import Path
-
-# # Add backend to path so we can import from it
-# backend_path = Path(__file__).parent.parent / "backend"
-# sys.path.insert(0, str(backend_path))
-
-# from backend.db.models import find_documents, get_document
-# from backend.schemas.shopping_agent import CartItem
-
-
-# # Simple test tool to verify tool calling works
-# def add_numbers(a: float, b: float) -> str:
-#     """
-#     Return the sum of a and b as a string.
-#     Keep output a string (ToolMessage requires string content).
-#     """
-#     result = float(a) + float(b)
-#     print(f"TOOL CALLED: add_numbers({a}, {b}) -> {result}")
-#     return str(result)
-
-
-# # Synchronous wrapper for async MongoDB operations
-# def fetch_household_inventory(household_id: str) -> str:
-#     """
-#     Fetch all grocery items for a household from the database.
-#     Returns a formatted string describing the current inventory status.
-    
-#     Args:
-#         household_id: The household ID to fetch inventory for
-        
-#     Returns:
-#         Formatted string with inventory status
-#     """
-#     import asyncio
-    
-#     async def _fetch():
-#         # Fetch all grocery lists for this household
-#         lists = await find_documents("grocery_lists", {"household_id": household_id})
-        
-#         # Flatten all items from all lists
-#         all_items = []
-#         for grocery_list in lists:
-#             items = grocery_list.get("items", [])
-#             all_items.extend(items)
-        
-#         if not all_items:
-#             return "No items in inventory. Household needs essential items."
-        
-#         # Format items with status
-#         formatted = []
-#         for item in all_items:
-#             name = item.get('item_name', 'Unknown')
-#             quantity = item.get('quantity', 0)
-#             brand = item.get('brand', 'Any')
-            
-#             if quantity == 0:
-#                 status = "OUT"
-#             elif quantity < 3:
-#                 status = "LOW"
-#             else:
-#                 status = "OK"
-            
-#             formatted.append(
-#                 f"- {name}: quantity={quantity}, brand={brand}, status={status}"
-#             )
-        
-#         return "\n".join(formatted)
-    
-#     # Run async function in event loop
-#     try:
-#         loop = asyncio.get_event_loop()
-#     except RuntimeError:
-#         loop = asyncio.new_event_loop()
-#         asyncio.set_event_loop(loop)
-    
-#     return loop.run_until_complete(_fetch())
-
-
-# def fetch_household_budget(household_id: str) -> str:
-#     """
-#     Fetch the household's grocery budget from the database.
-    
-#     Args:
-#         household_id: The household ID to fetch budget for
-        
-#     Returns:
-#         String with budget amount or error message
-#     """
-#     import asyncio
-    
-#     async def _fetch():
-#         # Try to get household budget
-#         household = await get_document("households", household_id)
-#         if household and "budget_weekly" in household:
-#             return f"${household['budget_weekly']:.2f}"
-        
-#         # Fallback to user budget
-#         user = await get_document("users", household_id)
-#         if user and "budget" in user:
-#             return f"${user['budget']:.2f}"
-        
-#         return "$100.00"  # Default fallback
-    
-#     try:
-#         loop = asyncio.get_event_loop()
-#     except RuntimeError:
-#         loop = asyncio.new_event_loop()
-#         asyncio.set_event_loop(loop)
-    
-#     return loop.run_until_complete(_fetch())
-
-
-# def analyze_pantry_items(household_id: str) -> str:
-#     """
-#     Analyze pantry items to identify what's running low.
-    
-#     Args:
-#         household_id: The household ID to analyze
-        
-#     Returns:
-#         Summary of low/out items that need attention
-#     """
-#     import asyncio
-    
-#     async def _fetch():
-#         # Fetch pantry items
-#         items = await find_documents("pantry_items", {"household_id": household_id})
-        
-#         if not items:
-#             return "No pantry items tracked yet."
-        
-#         low_items = []
-#         out_items = []
-        
-#         for item in items:
-#             name = item.get("item_name", "Unknown")
-#             on_hand = item.get("on_hand", 0)
-#             par_level = item.get("par_level", 0)
-            
-#             if on_hand == 0:
-#                 out_items.append(f"{name} (OUT)")
-#             elif on_hand < par_level:
-#                 low_items.append(f"{name} (LOW: {on_hand}/{par_level})")
-        
-#         result = []
-#         if out_items:
-#             result.append(f"OUT OF STOCK: {', '.join(out_items)}")
-#         if low_items:
-#             result.append(f"RUNNING LOW: {', '.join(low_items)}")
-        
-#         return "\n".join(result) if result else "All pantry items are stocked."
-    
-#     try:
-#         loop = asyncio.get_event_loop()
-#     except RuntimeError:
-#         loop = asyncio.new_event_loop()
-#         asyncio.set_event_loop(loop)
-    
-#     return loop.run_until_complete(_fetch())
-
 
 
 """
@@ -177,11 +11,10 @@ import asyncio
 from datetime import datetime
 
 # Add backend to path so we can import from it
-backend_path = Path(__file__).parent.parent / "backend"
+backend_path = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(backend_path))
 
-from backend.db.models import find_documents, get_document, create_document, COLLECTIONS
-from backend.schemas.shopping_agent import CartItem
+from db.models import find_documents, get_document, create_document, COLLECTIONS
 
 
 # Collection name constants
@@ -405,27 +238,6 @@ def fetch_household_budget(household_id: str) -> str:
 def analyze_pantry_items(household_id: str) -> str:
     """Analyze pantry items to identify what's running low."""
     return query_household_data(household_id, COLLECTION_PANTRY_ITEMS, "analyze")
-
-def add_item_sync(
-    household_id: str,
-    item_name: str,
-    quantity: int = 1,
-    price: float = 0.0,
-    brand: str = "Any",
-) -> str:
-    """
-    Backwards-compatible wrapper so graph.py can call a single-item add.
-    Internally this just uses add_items_to_cart(), which expects a list.
-    """
-    item = {
-        "item_name": item_name,
-        "quantity": quantity,
-        "price": price,
-        "brand": brand,
-    }
-    return add_items_to_cart(household_id, [item])
-
-
 
 # --- compatibility tools for LangGraph ---
 
