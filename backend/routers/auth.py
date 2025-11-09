@@ -9,7 +9,7 @@ import os
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 # MongoDB connection
-MONGO_URI = os.getenv("MONGO_URI", "mongodb+srv://aswin:agent@cluster0.gjdoeot.mongodb.net/household?retryWrites=true&w=majority&appName=Cluster0")
+MONGO_URI = os.getenv("MONGO_URI")
 MONGO_DB = os.getenv("MONGO_DB", "household")
 
 client = MongoClient(MONGO_URI)

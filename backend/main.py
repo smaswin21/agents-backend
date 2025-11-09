@@ -5,6 +5,7 @@ Includes all routers and middleware configuration.
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
+from db import mongo
 
 # Import routers
 from routers.root import router as root_router
@@ -36,3 +37,26 @@ app.include_router(auth_router)
 app.include_router(household_router)
 app.include_router(agent_messages_router)
 app.include_router(house_agent_router)
+
+
+@app.on_event("startup")
+async def startup_event():
+    """Ensure a single Motor client is created on startup."""
+    # create the client and warm the DB handle
+    mongo.get_client()
+
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    """Close the Motor client on shutdown to release connections."""
+    client = None
+    try:
+        client = mongo.get_client()
+    except RuntimeError:
+        # no client/configured, nothing to close
+        return
+    try:
+        client.close()
+    except Exception:
+        # best-effort close
+        pass
