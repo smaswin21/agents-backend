@@ -1,4 +1,4 @@
-# agents-backend
+# Agents-Backend Repository
 
 A  backend for the project which provides the house agent, API routers, DB models and an LLM integration.
 
