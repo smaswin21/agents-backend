@@ -25,6 +25,7 @@ class HouseholdPreferences(BaseModel):
     name: str
     members: int
     common_items: List[str]
+    pantry_amounts: dict[str, str] 
     users: List[EmailStr]
 
 
@@ -47,6 +48,7 @@ async def save_household_preferences(data: HouseholdPreferences = Body(...)):
         "name": data.name,
         "members": data.members,
         "common_items": data.common_items,
+        "pantry_amounts": data.pantry_amounts,
         "invite_code": _generate_unique_invite_code(),
         "users": data.users,  # uses list of emails from form
     }
