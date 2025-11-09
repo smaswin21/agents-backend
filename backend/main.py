@@ -13,6 +13,7 @@ from routers.auth import router as auth_router
 from routers.household import router as household_router
 from routers.agent_messages import router as agent_messages_router
 from routers.house_agent import router as house_agent_router
+from routers.shopping_cart import router as shopping_cart_router
 
 # Load environment variables
 load_dotenv()
@@ -36,3 +37,4 @@ app.include_router(auth_router)
 app.include_router(household_router)
 app.include_router(agent_messages_router)
 app.include_router(house_agent_router)
+app.include_router(shopping_cart_router)
