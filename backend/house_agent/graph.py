@@ -13,22 +13,18 @@ from langchain_openai import ChatOpenAI
 from .config import OPENAI_API_KEY, OPENAI_BASE_URL, OPENAI_MODEL
 from .state import AgentState
 from .tools import (
-    add_numbers,
     fetch_household_inventory,
     fetch_household_budget,
     analyze_pantry_items,
-    add_item_sync,
-    bulk_add_items_sync
+    bump_item_quantity
 )
 
 # Define all available tools
 TOOLS = [
-    StructuredTool.from_function(add_numbers),
     StructuredTool.from_function(fetch_household_inventory),
     StructuredTool.from_function(fetch_household_budget),
     StructuredTool.from_function(analyze_pantry_items),
-    StructuredTool.from_function(add_item_sync),
-    StructuredTool.from_function(bulk_add_items_sync),
+    StructuredTool.from_function(bump_item_quantity)
 ]
 
 SYSTEM_MESSAGE = """You are Household Mediator, an AI assistant that helps housemates stay organized 
@@ -69,16 +65,12 @@ def _exec_tool(name: str, args):
     """Execute a tool by name with parsed arguments."""
     parsed = _parse_args(args)
     
-    if name == "add_numbers":
-        return add_numbers(**parsed)
-    elif name == "fetch_household_inventory":
+    if name == "fetch_household_inventory":
         return fetch_household_inventory(**parsed)
     elif name == "fetch_household_budget":
         return fetch_household_budget(**parsed)
     elif name == "analyze_pantry_items":
         return analyze_pantry_items(**parsed)
-    elif name == "add_item_sync":
-        return add_item_sync(**parsed)
     elif name == "bulk_add_items_sync":
         return bulk_add_items_sync(**parsed)
     

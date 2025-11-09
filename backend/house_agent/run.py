@@ -14,7 +14,7 @@ def main():
     state = {"messages": []}
     
     while True:
-        user_input = input("\n👤 You: ").strip()
+        user_input = input("\n👤 User: ").strip()
         
         if user_input.lower() in {"exit", "quit"}:
             print("Goodbye!")
