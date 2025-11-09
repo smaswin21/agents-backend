@@ -10,6 +10,10 @@ This repository contains the server-side code used by the agent suite. The main 
 - Entrypoint: `backend/main.py`
 - Purpose: run API endpoints and house agent components; interacts with a MongoDB backing store and an LLM provider.
 
+## Frontend Repository
+
+Frontend Repo: https://github.com/rassimarc/ai-house-hackathon-frontend
+
 ## Repo layout
 
 ```
