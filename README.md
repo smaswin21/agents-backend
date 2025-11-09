@@ -1,6 +1,6 @@
 # agents-backend
 
-A small backend for the Agent-007 project — provides the house agent, API routers, DB models and an LLM integration.
+A  backend for the project which provides the house agent, API routers, DB models and an LLM integration.
 
 This repository contains the server-side code used by the agent suite. The main app lives in the `backend/` folder.
 
