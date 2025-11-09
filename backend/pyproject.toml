@@ -1,27 +1,22 @@
-[project]
+[tool.poetry]
 name = "backend"
 version = "0.1.0"
-description = ""
-authors = [
-    {name = "smaswin21",email = "sm.aswin21@gmail.com"}
-]
-readme = "README.md"
-requires-python = ">=3.12,<4.0"
-dependencies = [
-    "fastapi (>=0.121.0,<0.122.0)",
-    "uvicorn (>=0.38.0,<0.39.0)",
-    "motor (>=3.7.1,<4.0.0)",
-    "python-dotenv (>=1.2.1,<2.0.0)",
-    "langgraph (>=1.0.2,<2.0.0)",
-    "langchain-core (>=1.0.4,<2.0.0)",
-    "langchain-openai (>=1.0.2,<2.0.0)",
-    "apscheduler (>=3.11.1,<4.0.0)",
-    "pydantic (>=2.12.4,<3.0.0)",
-    "pydantic-settings (>=2.11.0,<3.0.0)",
-    "email-validator (>=2.3.0,<3.0.0)",
-    "langchain (>=1.0.5,<2.0.0)"
-]
+description = "House Agent Backend"
+authors = ["smaswin21 <sm.aswin21@gmail.com>"]
+package-mode = false
 
+[tool.poetry.dependencies]
+python = ">=3.12,<4.0"
+fastapi = ">=0.121.0,<0.122.0"
+uvicorn = ">=0.38.0,<0.39.0"
+motor = ">=3.7.1,<4.0.0"
+python-dotenv = ">=1.2.1,<2.0.0"
+langgraph = ">=1.0.2,<2.0.0"
+langchain-core = ">=1.0.4,<2.0.0"
+langchain-openai = ">=1.0.2,<2.0.0"
+pydantic = ">=2.12.4,<3.0.0"
+pydantic-settings = ">=2.11.0,<3.0.0"
+langchain = ">=1.0.5,<2.0.0"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
