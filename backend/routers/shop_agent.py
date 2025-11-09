@@ -8,7 +8,6 @@ from agents.shopping_agent_service import decide_shopping_cart
 
 router = APIRouter(prefix="/shopping-agent", tags=["Shopping Agent"])
 
-
 @router.post("/decide", response_model=AgentDecisionResponse)
 async def trigger_shopping_agent(request: AgentDecisionRequest) -> AgentDecisionResponse:
     """

@@ -19,7 +19,8 @@ COLLECTIONS = {
     "users": "users",
     "pantry_items": "pantry_items",
     "grocery_lists": "grocery_lists",
-    "item_feedback": "item_feedback"  
+    "item_feedback": "item_feedback" ,
+    "carts": "carts"
 }
 
 # Helper functions for MongoDB operations

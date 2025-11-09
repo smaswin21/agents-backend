@@ -1,4 +1,5 @@
 """Pantry Service - Business logic for pantry item operations."""
+
 from typing import List, Optional
 from datetime import datetime
 from db.models import create_document, get_document, update_document, find_documents, COLLECTIONS
