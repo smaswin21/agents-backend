@@ -1,5 +1,4 @@
 
-
 """
 LangGraph tools for the household agent.
 These tools interact with MongoDB to fetch and analyze household data.

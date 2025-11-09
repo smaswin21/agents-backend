@@ -1,26 +1,38 @@
-from typing import Union
-
+"""
+Main FastAPI application entry point.
+Includes all routers and middleware configuration.
+"""
 from fastapi import FastAPI
-from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
-from db.mongo import get_db
 
+# Import routers
+from routers.root import router as root_router
+from routers.health import router as health_router
+from routers.auth import router as auth_router
+from routers.household import router as household_router
+from routers.agent_messages import router as agent_messages_router
+from routers.house_agent import router as house_agent_router
+
+# Load environment variables
 load_dotenv()
 
-app = FastAPI(title="Agents Backend - House Agent")
+# Initialize FastAPI app
+app = FastAPI(title="Agents Backend")
 
+# Configure CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000", "http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
-
-
-@app.get("/health/db", response_class=JSONResponse)
-async def health_db() -> dict[str, bool]:
-    """Return {"ok": True} if a ping command to MongoDB succeeds."""
-    info = await get_db().command("ping")
-    return {"ok": bool(info.get("ok"))}
+# Include routers
+app.include_router(root_router)
+app.include_router(health_router)
+app.include_router(auth_router)
+app.include_router(household_router)
+app.include_router(agent_messages_router)
+app.include_router(house_agent_router)
