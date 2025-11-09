@@ -1,6 +1,7 @@
 """
 Agent messages endpoints for long-polling agent responses.
 """
+from datetime import timezone, datetime
 from typing import Optional
 import asyncio
 from fastapi import APIRouter, Query, Response
@@ -46,10 +47,17 @@ async def long_poll_agent_message(
         doc = agent_messages_collection.find_one(sort=[("created_at", -1)])
         if doc:
             created_at = doc.get("created_at")
-            # Return if client has no 'since' or the latest differs
+
+            # Convert datetime to ISO string if needed
+            if isinstance(created_at, datetime):
+                # ensure UTC and convert to ISO format
+                if created_at.tzinfo is None:
+                    created_at = created_at.replace(tzinfo=timezone.utc)
+                created_at = created_at.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
+
+            # Return if no 'since' or it's newer
             if not since or (created_at and created_at != since):
                 return {"message": doc.get("message", ""), "created_at": created_at}
-
         # timeout reached -> no new content
         if loop.time() >= deadline:
             return Response(status_code=204)
