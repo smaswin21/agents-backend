@@ -309,3 +309,51 @@ def bulk_add_items_sync(
         return f"Added {len(ids)} items to {collection}: {ids}"
 
     return _run_async(_add_bulk())
+
+
+def place_order(household_id: str) -> str:
+    """
+    Place a MOCK order for the household's active cart.
+    This simulates a checkout: finds the active cart, computes the total,
+    and returns a confirmation message.
+    """
+    async def _place():
+        # Find the active cart for the household
+        active_carts = await find_documents(
+            COLLECTION_carts,
+            {"household_id": household_id, "status": "active"}
+        )
+
+        if not active_carts:
+            msg = "No active cart found to place an order."
+            print(f"TOOL CALLED: place_order({household_id}) -> {msg}")
+            return msg
+
+        # Use the most recent active cart
+        cart = active_carts[-1]
+        items = cart.get("items", [])
+        total_price = 0.0
+        total_items = 0
+
+        for it in items:
+            qty = float(it.get("quantity", 0))
+            price = float(it.get("price", 0.0))
+            total_price += qty * price
+            total_items += qty
+
+        # Duplicate the cart as an 'ordered' record
+        ordered_cart = {
+            "household_id": household_id,
+            "items": items,
+            "status": "ordered",
+            "created_at": datetime.utcnow(),
+            "total_price": round(total_price, 2),
+        }
+        await create_document(COLLECTION_carts, ordered_cart)
+
+        # Confirmation message
+        msg = f"Ordered! Your order is on the way 🎉 Total: ${total_price:.2f} across {int(total_items)} item(s)."
+        print(f"TOOL CALLED: place_order({household_id}) -> {msg}")
+        return msg
+
+    return _run_async(_place())

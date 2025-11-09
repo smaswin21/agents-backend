@@ -85,6 +85,26 @@ def _exec_tool(name: str, args):
     return f"Unknown tool: {name}"
 
 
+def _exec_tool(name: str, args):
+    parsed = _parse_args(args)
+    if name == "add_numbers":
+        return add_numbers(**parsed)
+    elif name == "fetch_household_inventory":
+        return fetch_household_inventory(**parsed)
+    elif name == "fetch_household_budget":
+        return fetch_household_budget(**parsed)
+    elif name == "analyze_pantry_items":
+        return analyze_pantry_items(**parsed)
+    elif name == "add_item_sync":
+        return add_item_sync(**parsed)
+    elif name == "bulk_add_items_sync":
+        return bulk_add_items_sync(**parsed)
+    elif name == "place_order":                      # <-- add this
+        return place_order(**parsed)
+
+    return f"Unknown tool: {name}"
+
+
 def call_model(state: AgentState) -> AgentState:
     """
     Main agent logic: invoke LLM with tools and handle tool calls.
